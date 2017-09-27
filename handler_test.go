@@ -123,6 +123,28 @@ func TestHandler(t *testing.T) {
 			goImport: "example.com/portmidi git https://github.com/rakyll/modo",
 			goSource: "example.com/portmidi https://github.com/rakyll/modo_ _",
 		},
+		{
+			name: "subpath with path rules",
+			config: "host: example.com\n" +
+				"pathrules:\n" +
+				"  /{name}:\n" +
+				"    repo: https://github.com/rakyll/{name}\n" +
+				"    display: https://github.com/rakyll/{name} _ _\n",
+			path:     "/portmidi/foo",
+			goImport: "example.com/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/portmidi https://github.com/rakyll/portmidi _ _",
+		},
+		{
+			name: "subpath with path rules and static endpoint prefix",
+			config: "host: example.com\n" +
+				"pathrules:\n" +
+				"  /bar/{name}:\n" +
+				"    repo: https://github.com/rakyll/{name}\n" +
+				"    display: https://github.com/rakyll/{name} _ _\n",
+			path:     "/bar/portmidi/foo",
+			goImport: "example.com/bar/portmidi git https://github.com/rakyll/portmidi",
+			goSource: "example.com/bar/portmidi https://github.com/rakyll/portmidi _ _",
+		},
 	}
 	for _, test := range tests {
 		h, err := newHandler([]byte(test.config))
